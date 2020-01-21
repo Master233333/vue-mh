@@ -9,9 +9,14 @@ Vue.config.productionTip = false;
 class App extends VueComponent {
   @Provide()
   public rootStore = testStore;
+
+  public testData = 1;
+  public created() {
+    setInterval(() => this.testData = - this.testData, 2000)
+  }
   public render() {
     console.log(this.rootStore.testClass);
-    return <div>{this.rootStore.testClass}</div>;
+    return <div>{this.rootStore.testClass}{this.rootStore.testClass2(this.testData + '')}</div>;
   }
 }
 

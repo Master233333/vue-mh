@@ -6,7 +6,11 @@ export class TestStore {
     default: '3',
   })
   public testClass!: Readonly<string>;
-  public test1 = '333';
+  @AsyncValue({
+    func: (p: string) => new Promise(resolve => setTimeout(() => resolve(p + '123'), 1000)),
+    default: '3',
+  })
+  public testClass2!: (v?: string) => string;
 
   public get test2() {
     return '321';
