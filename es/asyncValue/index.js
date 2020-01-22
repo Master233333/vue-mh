@@ -1,14 +1,7 @@
 import Vue from 'vue';
 import { PromiseValue } from './promiseValue';
 import { isPromise } from '@/utils';
-import { PromiseFunc } from '@/common/types';
 import { PromiseFuncValue } from '@/asyncValue/primiseFuncValue';
-
-interface AsyncValueParams {
-  func: PromiseFunc | Promise<any>;
-  cache?: boolean;
-  default?: any;
-}
 
 /**
  * 异步加载数据的注解
@@ -17,26 +10,30 @@ interface AsyncValueParams {
  * @param options
  * @constructor
  */
-export function AsyncValue(options: AsyncValueParams) {
-  const { func, cache = true } = options;
+export function AsyncValue(options) {
+  const {
+    func,
+    cache = true
+  } = options;
+
   if (isPromise(func)) {
     // func是Promise
-    const obj = Vue.observable(new PromiseValue(func as Promise<any>, options.default));
-    return <T>(target: T, key: keyof T) => {
+    const obj = Vue.observable(new PromiseValue(func, options.default));
+    return (target, key) => {
       Object.defineProperty(target, key, {
         get: () => obj.value,
-        set: (val: any) => obj.value = val,
-        enumerable: true,
+        set: val => obj.value = val,
+        enumerable: true
       });
     };
   } else {
     // func是PromiseFunc
-    const obj = new PromiseFuncValue(func as PromiseFunc, Vue.observable, options.default, cache);
-    return <T>(target: T, key: keyof T) => {
+    const obj = new PromiseFuncValue(func, Vue.observable, options.default, cache);
+    return (target, key) => {
       Object.defineProperty(target, key, {
-        get: () => (...params: any) => {
+        get: () => (...params) => {
           return obj.value(params);
-        },
+        }
       });
     };
   }

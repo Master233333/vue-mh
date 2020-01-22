@@ -1,5 +1,6 @@
 import {Component, Prop} from "vue-property-decorator";
 import {Component as Tsx} from "vue-tsx-support";
+import { VNode } from 'vue';
 
 export interface IInput {
   value?: string | number;
@@ -39,7 +40,7 @@ export class Input extends Tsx<IInput> {
       ref: 'input',
     };
   }
-  public render() {
+  public render(): VNode {
     return <input {...this.attrs}/>;
   }
 }
